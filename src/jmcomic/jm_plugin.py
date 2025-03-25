@@ -772,11 +772,24 @@ class Img2pdfPlugin(JmOptionPlugin):
 
         # 调用 img2pdf 把 photo_dir 下的所有图片转为pdf
         img_path_ls, img_dir_ls = self.write_img_2_pdf(pdf_filepath, album, photo)
+        pdf_password = "123"  # 这里可以自定义密码
+        self.encrypt_pdf(pdf_filepath, pdf_password)
+
         self.log(f'Convert Successfully: JM{album or photo} → {pdf_filepath}')
 
         # 执行删除
         img_path_ls += img_dir_ls
         self.execute_deletion(img_path_ls)
+
+    def encrypt_pdf(self, pdf_filepath, password):
+        import fitz  # PyMuPDF
+        """
+        使用 PyMuPDF（fitz）为 PDF 添加密码
+        """
+        doc = fitz.open(pdf_filepath)  # 打开 PDF 文件
+        doc.save(pdf_filepath, encryption=fitz.PDF_ENCRYPT_AES_256, owner_pw=password, user_pw=password)
+        doc.close()
+        self.log(f'PDF 已加密: {pdf_filepath}')
 
     def write_img_2_pdf(self, pdf_filepath, album: JmAlbumDetail, photo: JmPhotoDetail):
         import img2pdf
