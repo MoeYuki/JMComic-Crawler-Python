@@ -748,6 +748,7 @@ class Img2pdfPlugin(JmOptionPlugin):
                pdf_dir=None,
                filename_rule='Pid',
                delete_original_file=False,
+               passwd=None,
                **kwargs,
                ):
         if photo is None and album is None:
@@ -772,9 +773,9 @@ class Img2pdfPlugin(JmOptionPlugin):
 
         # 调用 img2pdf 把 photo_dir 下的所有图片转为pdf
         img_path_ls, img_dir_ls = self.write_img_2_pdf(pdf_filepath, album, photo)
-        pdf_password = "123"  # 这里可以自定义密码
-        self.log(f'自定义密码:{pdf_password}')
-        self.encrypt_pdf(pdf_filepath, pdf_password)
+        # pdf_password = "123"  # 这里可以自定义密码
+        self.log(f'自定义密码:{passwd}')
+        self.encrypt_pdf(pdf_filepath, passwd)
 
         self.log(f'Convert Successfully: JM{album or photo} → {pdf_filepath}')
 
