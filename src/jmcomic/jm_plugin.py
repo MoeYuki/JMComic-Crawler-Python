@@ -787,9 +787,13 @@ class Img2pdfPlugin(JmOptionPlugin):
         """
         使用 PyMuPDF（fitz）为 PDF 添加密码
         """
+        temp_filepath = pdf_filepath + ".temp.pdf"  # 临时文件
+
         doc = fitz.open(pdf_filepath)  # 打开 PDF 文件
-        doc.save(pdf_filepath, encryption=fitz.PDF_ENCRYPT_AES_256, owner_pw=password, user_pw=password)
+        doc.save(temp_filepath, encryption=fitz.PDF_ENCRYPT_AES_256, owner_pw=password, user_pw=password)
         doc.close()
+
+        os.replace(temp_filepath, pdf_filepath)  # 替换原文件
         self.log(f'PDF 已加密: {pdf_filepath}')
 
     def write_img_2_pdf(self, pdf_filepath, album: JmAlbumDetail, photo: JmPhotoDetail):
